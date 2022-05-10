@@ -30,9 +30,9 @@ from .S_gen_sym import *
 from .S_gradient_decomposition import identify_decompositions
 
 PA = ParetoSet()
-def run_AI_all(pathdir,filename,BF_try_time=60,BF_ops_file_type="14ops", polyfit_deg=4, NN_epochs=4000, PA=PA):
+def run_AI_all(pathdir,filename,results_dir,BF_try_time=60,BF_ops_file_type="14ops", polyfit_deg=4, NN_epochs=4000, PA=PA):
     try:
-        os.mkdir("results/")
+        os.mkdir(results_dir+"/")
     except:
         pass
 
@@ -41,34 +41,34 @@ def run_AI_all(pathdir,filename,BF_try_time=60,BF_ops_file_type="14ops", polyfit
 
     # Run bf and polyfit
     PA = run_bf_polyfit(pathdir,pathdir,filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
-    PA = get_squared(pathdir,"results/mystery_world_squared/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)   
+    PA = get_squared(pathdir,results_dir+"/mystery_world_squared/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
 
     # Run bf and polyfit on modified output
 
-    PA = get_acos(pathdir,"results/mystery_world_acos/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
-    PA = get_asin(pathdir,"results/mystery_world_asin/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
-    PA = get_atan(pathdir,"results/mystery_world_atan/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
-    PA = get_cos(pathdir,"results/mystery_world_cos/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
-    PA = get_exp(pathdir,"results/mystery_world_exp/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
-    PA = get_inverse(pathdir,"results/mystery_world_inverse/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
-    PA = get_log(pathdir,"results/mystery_world_log/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
-    PA = get_sin(pathdir,"results/mystery_world_sin/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
-    PA = get_sqrt(pathdir,"results/mystery_world_sqrt/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
-    PA = get_squared(pathdir,"results/mystery_world_squared/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
-    PA = get_tan(pathdir,"results/mystery_world_tan/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
+    PA = get_acos(pathdir,results_dir+"/mystery_world_acos/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
+    PA = get_asin(pathdir,results_dir+"/mystery_world_asin/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
+    PA = get_atan(pathdir,results_dir+"/mystery_world_atan/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
+    PA = get_cos(pathdir,results_dir+"/mystery_world_cos/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
+    PA = get_exp(pathdir,results_dir+"/mystery_world_exp/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
+    PA = get_inverse(pathdir,results_dir+"/mystery_world_inverse/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
+    PA = get_log(pathdir,results_dir+"/mystery_world_log/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
+    PA = get_sin(pathdir,results_dir+"/mystery_world_sin/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
+    PA = get_sqrt(pathdir,results_dir+"/mystery_world_sqrt/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
+    PA = get_squared(pathdir,results_dir+"/mystery_world_squared/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
+    PA = get_tan(pathdir,results_dir+"/mystery_world_tan/",filename,BF_try_time,BF_ops_file_type, PA, polyfit_deg)
 
 #############################################################################################################################
     # check if the NN is trained. If it is not, train it on the data.
     if len(data[0])<3:
         print("Just one variable!")
         pass
-    elif path.exists("results/NN_trained_models/models/" + filename + ".h5"):# or len(data[0])<3:
+    elif path.exists(results_dir+"/NN_trained_models/models/" + filename + ".h5"):# or len(data[0])<3:
         print("NN already trained \n")
         print("NN loss: ", NN_eval(pathdir,filename)[0], "\n")
         model_feynman = NN_eval(pathdir,filename)[1]
-    elif path.exists("results/NN_trained_models/models/" + filename + "_pretrained.h5"):
+    elif path.exists(results_dir+"/NN_trained_models/models/" + filename + "_pretrained.h5"):
         print("Found pretrained NN \n")
-        model_feynman = NN_train(pathdir,filename,NN_epochs/2,lrs=1e-3,N_red_lr=3,pretrained_path="results/NN_trained_models/models/" + filename + "_pretrained.h5")
+        model_feynman = NN_train(pathdir,filename,NN_epochs/2,lrs=1e-3,N_red_lr=3,pretrained_path=results_dir+"/NN_trained_models/models/" + filename + "_pretrained.h5")
         print("NN loss after training: ", NN_eval(pathdir,filename), "\n")
     else:
         print("Training a NN on the data... \n")
@@ -121,7 +121,7 @@ def run_AI_all(pathdir,filename,BF_try_time=60,BF_ops_file_type="14ops", polyfit
     if succ_grad == 1:
         #try:
         for qqqq in range(1):
-            brute_force_comp("results/","gradients_comp_%s.txt" %filename,600,"14ops.txt")
+            brute_force_comp(results_dir+"/","gradients_comp_%s.txt" %filename,600,"14ops.txt")
             bf_all_output = np.loadtxt("results_comp.dat", dtype="str")
             for bf_i in range(len(bf_all_output)):
                 idx_comp_temp = 0
@@ -152,7 +152,7 @@ def run_AI_all(pathdir,filename,BF_try_time=60,BF_ops_file_type="14ops", polyfit
         if len(data[0])>3:
             # find the best separability indices
             decomp_idx = identify_decompositions(pathdir,filename, model_feynman)
-            brute_force_gen_sym("results/","gradients_gen_sym_%s" %filename,600,"14ops.txt")
+            brute_force_gen_sym(results_dir+"/","gradients_gen_sym_%s" %filename,600,"14ops.txt")
             bf_all_output = np.loadtxt("results_gen_sym.dat", dtype="str")
             
             for bf_i in range(len(bf_all_output)):
@@ -177,7 +177,7 @@ def run_AI_all(pathdir,filename,BF_try_time=60,BF_ops_file_type="14ops", polyfit
         print("Translational symmetry found for variables:", symmetry_plus_result[1],symmetry_plus_result[2])
         new_pathdir, new_filename = do_translational_symmetry_plus(pathdir,filename,symmetry_plus_result[1],symmetry_plus_result[2])
         PA1_ = ParetoSet()
-        PA1 = run_AI_all(new_pathdir,new_filename,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
+        PA1 = run_AI_all(new_pathdir,new_filename,results_dir,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
         PA = add_sym_on_pareto(pathdir,filename,PA1,symmetry_plus_result[1],symmetry_plus_result[2],PA,"+")
         return PA
 
@@ -185,7 +185,7 @@ def run_AI_all(pathdir,filename,BF_try_time=60,BF_ops_file_type="14ops", polyfit
         print("Translational symmetry found for variables:", symmetry_minus_result[1],symmetry_minus_result[2])
         new_pathdir, new_filename = do_translational_symmetry_minus(pathdir,filename,symmetry_minus_result[1],symmetry_minus_result[2])
         PA1_ = ParetoSet()
-        PA1 = run_AI_all(new_pathdir,new_filename,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
+        PA1 = run_AI_all(new_pathdir,new_filename,results_dir,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
         PA = add_sym_on_pareto(pathdir,filename,PA1,symmetry_minus_result[1],symmetry_minus_result[2],PA,"-")
         return PA
 
@@ -193,7 +193,7 @@ def run_AI_all(pathdir,filename,BF_try_time=60,BF_ops_file_type="14ops", polyfit
         print("Translational symmetry found for variables:", symmetry_multiply_result[1],symmetry_multiply_result[2])
         new_pathdir, new_filename = do_translational_symmetry_multiply(pathdir,filename,symmetry_multiply_result[1],symmetry_multiply_result[2])
         PA1_ = ParetoSet()
-        PA1 = run_AI_all(new_pathdir,new_filename,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
+        PA1 = run_AI_all(new_pathdir,new_filename,results_dir,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
         PA = add_sym_on_pareto(pathdir,filename,PA1,symmetry_multiply_result[1],symmetry_multiply_result[2],PA,"*")
         return PA
 
@@ -201,7 +201,7 @@ def run_AI_all(pathdir,filename,BF_try_time=60,BF_ops_file_type="14ops", polyfit
         print("Translational symmetry found for variables:", symmetry_divide_result[1],symmetry_divide_result[2])
         new_pathdir, new_filename = do_translational_symmetry_divide(pathdir,filename,symmetry_divide_result[1],symmetry_divide_result[2])
         PA1_ = ParetoSet()
-        PA1 = run_AI_all(new_pathdir,new_filename,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
+        PA1 = run_AI_all(new_pathdir,new_filename,results_dir,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
         PA = add_sym_on_pareto(pathdir,filename,PA1,symmetry_divide_result[1],symmetry_divide_result[2],PA,"/")
         return PA
 
@@ -209,9 +209,9 @@ def run_AI_all(pathdir,filename,BF_try_time=60,BF_ops_file_type="14ops", polyfit
         print("Additive separability found for variables:", separability_plus_result[1],separability_plus_result[2])
         new_pathdir1, new_filename1, new_pathdir2, new_filename2,  = do_separability_plus(pathdir,filename,separability_plus_result[1],separability_plus_result[2])
         PA1_ = ParetoSet()
-        PA1 = run_AI_all(new_pathdir1,new_filename1,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
+        PA1 = run_AI_all(new_pathdir1,new_filename1,results_dir,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
         PA2_ = ParetoSet()
-        PA2 = run_AI_all(new_pathdir2,new_filename2,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA2_)
+        PA2 = run_AI_all(new_pathdir2,new_filename2,results_dir,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA2_)
         combine_pareto_data = np.loadtxt(pathdir+filename)
         PA = combine_pareto(combine_pareto_data,PA1,PA2,separability_plus_result[1],separability_plus_result[2],PA,"+")
         return PA
@@ -220,9 +220,9 @@ def run_AI_all(pathdir,filename,BF_try_time=60,BF_ops_file_type="14ops", polyfit
         print("Multiplicative separability found for variables:", separability_multiply_result[1],separability_multiply_result[2])
         new_pathdir1, new_filename1, new_pathdir2, new_filename2,  = do_separability_multiply(pathdir,filename,separability_multiply_result[1],separability_multiply_result[2])
         PA1_ = ParetoSet()
-        PA1 = run_AI_all(new_pathdir1,new_filename1,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
+        PA1 = run_AI_all(new_pathdir1,new_filename1,results_dir,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
         PA2_ = ParetoSet()
-        PA2 = run_AI_all(new_pathdir2,new_filename2,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA2_)
+        PA2 = run_AI_all(new_pathdir2,new_filename2,results_dir,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA2_)
         combine_pareto_data = np.loadtxt(pathdir+filename)
         PA = combine_pareto(combine_pareto_data,PA1,PA2,separability_multiply_result[1],separability_multiply_result[2],PA,"*")
         return PA
@@ -231,7 +231,7 @@ def run_AI_all(pathdir,filename,BF_try_time=60,BF_ops_file_type="14ops", polyfit
         print("Compositionality found")
         new_pathdir, new_filename = do_compositionality(pathdir,filename,math_eq_comp)
         PA1_ = ParetoSet()
-        PA1 = run_AI_all(new_pathdir,new_filename,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
+        PA1 = run_AI_all(new_pathdir,new_filename,results_dir,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
         PA = add_comp_on_pareto(PA1,PA,math_eq_comp)
         return PA
 
@@ -239,13 +239,13 @@ def run_AI_all(pathdir,filename,BF_try_time=60,BF_ops_file_type="14ops", polyfit
         print("Generalized symmetry found")
         new_pathdir, new_filename = do_gen_sym(pathdir,filename,decomp_idx,math_eq_gen_sym)
         PA1_ = ParetoSet()
-        PA1 = run_AI_all(new_pathdir,new_filename,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
+        PA1 = run_AI_all(new_pathdir,new_filename,results_dir,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA1_)
         PA = add_gen_sym_on_pareto(PA1,PA, decomp_idx, math_eq_gen_sym)
         return PA
     else:
         return PA
 # this runs snap on the output of aifeynman
-def run_aifeynman(pathdir,filename,BF_try_time,BF_ops_file_type, polyfit_deg=4, NN_epochs=4000, vars_name=[],test_percentage=20):
+def run_aifeynman(pathdir,filename,BF_try_time,BF_ops_file_type, results_dir='results', polyfit_deg=4, NN_epochs=4000, vars_name=[],test_percentage=20):
     # If the variable names are passed, do the dimensional analysis first
     filename_orig = filename
     try:
@@ -271,7 +271,7 @@ def run_aifeynman(pathdir,filename,BF_try_time,BF_ops_file_type, polyfit_deg=4, 
 
     PA = ParetoSet()
     # Run the code on the train data
-    PA = run_AI_all(pathdir,filename+"_train",BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA=PA)
+    PA = run_AI_all(pathdir,filename+"_train",results_dir,BF_try_time,BF_ops_file_type, polyfit_deg, NN_epochs, PA=PA)
     PA_list = PA.get_pareto_points()
 
     '''
@@ -284,7 +284,7 @@ def run_aifeynman(pathdir,filename,BF_try_time,BF_ops_file_type, polyfit_deg=4, 
     PA_list = PA.get_pareto_points()
     '''
 
-    np.savetxt("results/solution_before_snap_%s.txt" %filename,PA_list,fmt="%s")
+    np.savetxt(results_dir+"/solution_before_snap_%s.txt" %filename,PA_list,fmt="%s")
 
 
     # Run zero, integer and rational snap on the resulted equations
@@ -292,7 +292,7 @@ def run_aifeynman(pathdir,filename,BF_try_time,BF_ops_file_type, polyfit_deg=4, 
         PA = add_snap_expr_on_pareto(pathdir,filename,PA_list[j][-1],PA, "")
 
     PA_list = PA.get_pareto_points()
-    np.savetxt("results/solution_first_snap_%s.txt" %filename,PA_list,fmt="%s")
+    np.savetxt(results_dir+"/solution_first_snap_%s.txt" %filename,PA_list,fmt="%s")
 
     # Run gradient descent on the data one more time
     for i in range(len(PA_list)):
@@ -328,7 +328,7 @@ def run_aifeynman(pathdir,filename,BF_try_time,BF_ops_file_type, polyfit_deg=4, 
         save_data = np.column_stack((test_errors,log_err,log_err_all,list_dt))
     else:
         save_data = np.column_stack((log_err,log_err_all,list_dt))
-    np.savetxt("results/solution_%s" %filename_orig,save_data,fmt="%s")
+    np.savetxt(results_dir+"/solution_%s" %filename_orig,save_data,fmt="%s")
     try:
         os.remove(pathdir+filename+"_test")
         os.remove(pathdir+filename+"_train")
